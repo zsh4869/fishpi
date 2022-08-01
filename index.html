@@ -30,8 +30,8 @@
         }
 
         #sp3 {
-            background: linear-gradient(to left, rgb(36, 176, 183), rgb(29, 172, 179));
-            box-shadow: rgb(34 191 199) 0px 3px 3px -5px, rgb(34 191 199) 0px 2px 5px;
+            background: linear-gradient(to left, rgb(41, 209, 32), rgb(60, 175, 54));
+            box-shadow: rgb(60 175 54) 0px 3px 3px -5px, rgb(60 175 54) 0px 2px 5px;
         }
     </style>
 </head>
@@ -55,9 +55,9 @@
     if (hyd < 10) {
         document.getElementsByClassName("progress-done")[0].id = "sp1";
     } else if (hyd >= 10 && hyd < 100) {
-        document.getElementsByClassName("progress-done")[0].id = "sp1";
+        document.getElementsByClassName("progress-done")[0].id = "sp2";
     } else if (hyd >= 100) {
-        document.getElementsByClassName("progress-done")[0].id = "sp1";
+        document.getElementsByClassName("progress-done")[0].id = "sp3";
     }
     document.getElementsByClassName("progress-done")[0].style = "width:" + hyd + "%;";
 </script>
