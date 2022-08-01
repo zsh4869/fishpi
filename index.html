@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .progress {
+            background-color: rgba(100, 100, 100, .2);
+            border-radius: 5px;
+            position: relative;
+            margin: 0 3px 0 10px;
+            height: 10px;
+            width: 99%;
+        }
+
+        .progress-done {
+            border-radius: 5px;
+            height: 10px;
+            transition: width 1s ease .3s;
+        }
+
+        #sp1 {
+            background: linear-gradient(to left, rgb(36, 176, 183), rgb(29, 172, 179));
+            box-shadow: rgb(34 191 199) 0px 3px 3px -5px, rgb(34 191 199) 0px 2px 5px;
+        }
+
+        #sp2 {
+            background: linear-gradient(to left, rgb(36, 176, 183), rgb(29, 172, 179));
+            box-shadow: rgb(34 191 199) 0px 3px 3px -5px, rgb(34 191 199) 0px 2px 5px;
+        }
+
+        #sp3 {
+            background: linear-gradient(to left, rgb(36, 176, 183), rgb(29, 172, 179));
+            box-shadow: rgb(34 191 199) 0px 3px 3px -5px, rgb(34 191 199) 0px 2px 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="progress">
+    <div class="progress-done"></div>
+</div>
+<script>
+    var url = window.location.href;
+    function getParam(variable)
+    {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+            if(pair[0] == variable){return pair[1];}
+        }
+        return(false);
+    }
+    var hyd = getParam("hyd") / 100;
+    if (hyd < 10) {
+        document.getElementsByClassName("progress-done")[0].id = "sp1";
+    } else if (hyd >= 10 && hyd < 100) {
+        document.getElementsByClassName("progress-done")[0].id = "sp1";
+    } else if (hyd >= 100) {
+        document.getElementsByClassName("progress-done")[0].id = "sp1";
+    }
+    document.getElementsByClassName("progress-done")[0].style = "width:" + hyd + "%;";
+</script>
+</body>
+</html>
