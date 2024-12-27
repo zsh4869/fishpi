@@ -321,6 +321,33 @@
         sendMsgApi("鸽 勇士题 " + getRandomInt(0,99));
     };
 
+    // 清除通知和私信
+    var clearMsg = document.createElement("button");
+    clearMsg.id = "clearMsg";
+    clearMsg.textContent = "清空私信";
+    clearMsg.className="red";
+    clearMsg.setAttribute('style','margin-right:5px');
+    //绑定按键点击功能
+    clearMsg.onclick = function (){
+        $.ajax({
+            url: Label.servePath + "/chat/mark-all-as-read?apiKey=" + Label.node.apiKey,
+            type: "GET",
+            async: false,
+            success: function (e) {
+
+            }
+        });
+        $.ajax({
+            url:Label.servePath + "/notifications/all-read",
+            type: "GET",
+            async: false,
+            success: function (e) {
+
+            }
+        });
+        return
+    };
+
     elve.appendChild(ge_roll);
     elve.appendChild(ge_qa);
     elve.appendChild(jl_jyc);
@@ -334,6 +361,7 @@
     elve.appendChild(info);
     elve.appendChild(word);
     elve.appendChild(xwb_btn);
+    elve.appendChild(clearMsg);
     elve.id = "elves";
     elve.align = "right";
     x.appendChild(elve);
