@@ -212,7 +212,7 @@
     //绑定按键点击功能
     sxw.onclick = function () {
         sendMsgApi("小冰 去打劫");
-        sendMsgApi("凌 去打劫");
+        sendMsgApi("凌 去探索");
     };
 
     // 乞讨
