@@ -348,6 +348,17 @@
         return
     };
 
+    // 大招
+    var jl_zhen = document.createElement("button");
+    jl_zhen.id = "zhen";
+    jl_zhen.textContent = "暴雨梨花针";
+    jl_zhen.className = "red";
+    jl_zhen.setAttribute('style', 'margin-right:5px');
+    //绑定按键点击功能
+    jl_zhen.onclick = function () {
+        sendMsgApi("凌 暴雨梨花针");
+    };
+
     elve.appendChild(ge_roll);
     elve.appendChild(ge_qa);
     elve.appendChild(jl_jyc);
@@ -357,6 +368,7 @@
     elve.appendChild(jl_week);
     elve.appendChild(sxw);
     elve.appendChild(jl_hlsg);
+    elve.appendChild(jl_zhen);
     elve.appendChild(dlw);
     elve.appendChild(info);
     elve.appendChild(word);
