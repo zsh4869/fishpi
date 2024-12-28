@@ -863,6 +863,10 @@
                 var match = markDown.match(/\d+/);
                 match = parseInt(match[0]);
                 fish_tongji.bagChi -= match;
+            } else if (markDown.indexOf('鱼叉增幅溢出转化') > -1) {
+                fish_tongji.bagChi += 5;
+                fish_tongji.yuchi += 5;
+                fish_tongji.total += 5;
             }
             window.localStorage.setItem('fish-tongji', JSON.stringify(fish_tongji))
         } catch (e) {
