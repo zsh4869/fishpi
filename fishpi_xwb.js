@@ -836,6 +836,7 @@
                 fish_tongji.total += match
                 fish_tongji.yuchi += match
                 fish_tongji.byYuchi += match
+                fish_tongji.bagChi += match
                 fish_tongji.bagCha = 0;
                 fish_tongji.yuchaList = [];
                 fish_tongji.byDateStr = new Date().toLocaleString()
