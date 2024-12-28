@@ -741,6 +741,7 @@
             fish_tongji.yuchaList = chaList;
         } else {
             fish_tongji.bagCha = 0;
+            fish_tongji.yuchaList = [];
         }
         window.localStorage.setItem('fish-tongji', JSON.stringify(fish_tongji));
     }
