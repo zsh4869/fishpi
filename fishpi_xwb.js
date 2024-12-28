@@ -589,7 +589,7 @@
                             });
                         }
                         // 统计背包
-                        if (o.userName == 'sevenSummer' && o.md.indexOf('@' + Label.currentUserName) > -1 && o.md.indexOf('今天背包冷气很足') > -1) {
+                        if (o.md && o.userName == 'sevenSummer' && o.md.indexOf('@' + Label.currentUserName) > -1 && o.md.indexOf('今天背包冷气很足') > -1) {
                             // 统计背包内的数据
                             tongjiBag(o.md);
                         }
