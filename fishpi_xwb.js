@@ -781,6 +781,7 @@
                 var match = markDown.match(/\d+/);
                 match = parseInt(match[0]);
                 if (match) {
+                    fish_tongji.yuchaList.shift();
                     if (markDown.indexOf('鱼翅') > -1) {
                         fish_tongji.yuchi = fish_tongji.yuchi + match
                         fish_tongji.total += match
@@ -791,6 +792,7 @@
                         fish_tongji.bagWan += match
                     }
                 }
+                fish_tongji.bagCha -= 1;
             } else if (markDown.indexOf('亲爱的玩家. 你拿出渔网里的东西一看. 竟然是') > -1 || markDown.indexOf('亲爱的玩家. 你踩在沙滩上感觉有什么东西硌脚, 抬起脚一看. 竟然是') > -1) {
                 var name = markDown.substring(markDown.indexOf('`') + 1, markDown.lastIndexOf('`'));
                 // console.log(name)
