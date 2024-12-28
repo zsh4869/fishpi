@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         鱼派小尾巴
 // @namespace    http://tampermonkey.net/
-// @version      1.6.1
+// @version      1.6.2
 // @description  try to thank APTX-4869!
 // @author       (江户川-哀酱)APTX-4869
 // @match        https://fishpi.cn/cr
@@ -13,7 +13,7 @@
 
 (function () {
     'use strict';
-    const version_us = "v1.6.1";
+    const version_us = "v1.6.2";
     var heads = document.getElementsByTagName("head");
     var link = document.getElementsByTagName("link");
     var suffixFlag = window.localStorage['xwb_flag'] ? JSON.parse(window.localStorage['xwb_flag']) : false;
@@ -178,7 +178,7 @@
     //绑定按键点击功能
     dlw.onclick = function () {
         var redPacketData = {
-            "content": "[redpacket]{\"type\":\"specify\",\"money\":\"128\",\"count\":\"1\",\"msg\":\"总不能一直不出1吧\",\"recivers\":[\"sevenSummer\"]}[/redpacket]",
+            "content": "[redpacket]{\"type\":\"specify\",\"money\":\"64\",\"count\":\"1\",\"msg\":\"总不能一直不出1吧\",\"recivers\":[\"sevenSummer\"]}[/redpacket]",
             "client": "Web/小尾巴快捷端" + version_us
         };
         $.ajax({
@@ -367,8 +367,8 @@
     elve.appendChild(ge_qt);
     elve.appendChild(jl_week);
     elve.appendChild(sxw);
-    elve.appendChild(jl_hlsg);
     elve.appendChild(jl_zhen);
+    elve.appendChild(jl_hlsg);
     elve.appendChild(dlw);
     elve.appendChild(info);
     elve.appendChild(word);
@@ -437,7 +437,9 @@
 
     $("#reconnectSevenSummer").click(function() {
         $("#noteMsgList").html('');
-        PrivateWss.close();
+        if (PrivateWss) {
+            PrivateWss.close();
+        }
         initPrivateChannel();
     });
 
@@ -446,6 +448,7 @@
     let privateChatHB;
     var PrivateWss;
     function initPrivateChannel() {
+        console.info('tongji_flag_f', tongji_flag);
         if (tongji_flag < 0) {
             return;
         }
@@ -474,7 +477,7 @@
 
     // 渲染记事本消息
     function renderNoteMsg(e) {
-        $("#noteMsgList").prepend('<div class="allNoteMsg" style="display: flex;margin: 10px;"><div class="ice-msg-content" style="position: relative;background-color: var(--background-secondary-color);border-radius: 5px;padding: 8px 15px;overflow: initial;max-width: 75%;font-size: 12px;box-sizing: border-box;">' + e + '</div></div>')
+        $("#noteMsgList").prepend('<div class="allNoteMsg" style="display: flex;margin: 10px;"><div class="ice-msg-content" style="position: relative;background-color: var(--background-secondary-color);border-radius: 5px;padding: 8px 15px;overflow: initial;max-width: 100%;font-size: 12px;box-sizing: border-box;">' + e + '<div class="fn__right" style="margin-top: 5px; font-size: 10px;">'+new Date().toLocaleString()+'</div></div></div>')
     }
 
     async function waitWss(e) {
@@ -585,6 +588,11 @@
                                 body: o.userName + ' 出现了，快来跟TA互动吧'//body: 通知中额外显示的字符串
                             });
                         }
+                        // 统计背包
+                        if (o.userName == 'sevenSummer' && o.md.indexOf('@' + Label.currentUserName) > -1 && o.md.indexOf('今天背包冷气很足') > -1) {
+                            // 统计背包内的数据
+                            tongjiBag(o.md);
+                        }
 
                         d = o.userName;
                         let t = o.content;
@@ -638,19 +646,22 @@
 
             };
         } else {console.info('消息监听失败')}
-        if (e != 1) {initPrivateChannel();}
-    }
-
-    if (tongji_flag > 0) {
-        waitWss();
+        if (e != 1) {
+            console.info('tongji_flag', tongji_flag);
+            if (tongji_flag > 0) {
+                initPrivateChannel();
+            }
+        }
     }
 
     $("#fishDetail").click(function() {
+        var bstr = fish_tongji.byDateStr ? fish_tongji.byDateStr : '很久之前';
         // 收益统计
         Util.alert("" +
             "<div class=\"form fn__flex-column\">\n" +
             "<label>\n" +
-            "<table><tbody>" +
+            "<div style=\"text-align: left;\"><b>上次暴雨梨花针施放时间："+bstr+"</b></div>" +
+            "<table cellspacing=\"0\" border=\"1\"><tbody>" +
             "   <tr><th>叉得鱼翅</th><th>biu得鱼翅</th><th>biu得鱼丸</th><th>暴雨梨花</th></tr>" +
             "   <tr><td>"+fish_tongji.yuchi+"</td><td>"+fish_tongji.biuYuchi+"</td><td>"+fish_tongji.yuwan+"</td><td>"+fish_tongji.byYuchi+"</td></tr>" +
             "   <tr><th>橙色鱼叉</th><th>紫色鱼叉</th><th>白色鱼叉</th><th>五换一</th></tr>" +
@@ -661,9 +672,10 @@
             "</table>\n" +
             "</label>\n" +
             "<div class=\"fn-hr5\"></div>\n" +
+            "<table><tr><th>背包鱼翅：" + fish_tongji.bagChi + "</th><th>背包鱼丸："+fish_tongji.bagWan+"</th><th>背包鱼叉：["+fish_tongji.yuchaList.join('')+"]"+ fish_tongji.bagCha +"/10</th></tr></table>" +
             "<div class=\"fn__flex\" style=\"margin-top: 15px; justify-content: flex-end;\">\n" +
             "  <button class=\"btn btn--confirm\" onclick='Util.copyTongji();'>复制</button>\n" +
-            "  <button class=\"btn btn--confirm\" onclick='Util.reTongji();' style=\"margin-left: 10px;\">重置</button>\n" +
+            "  <button class=\"btn btn--confirm\" style=\"margin-left: 10px;\" onclick='Util.reTongji();'>重置</button>\n" +
             "</div>\n" +
             "</div>" +
             "", "渔场游戏收益统计：[" + fish_tongji.dateStr + "]开始");
@@ -684,12 +696,53 @@
     }
     // 重置
     Util.reTongji = function reTongji() {
-        // console.log('重置');
+        newOpt.bagChi = fish_tongji.bagChi;
+        newOpt.bagWan = fish_tongji.bagWan;
+        newOpt.bagCha = fish_tongji.bagCha;
+        newOpt.yuchaList = fish_tongji.yuchaList;
+        newOpt.byDateStr = fish_tongji.byDateStr;
         fish_tongji = newOpt;
         fish_tongji.dateStr = new Date().toLocaleString();
         fish_tongji.date = new Date().getDate();
         window.localStorage['fish-tongji'] = JSON.stringify(fish_tongji);
         Util.closeAlert();
+    }
+
+    async function tongjiBag(md) {
+        if (md.match(/`鱼翅`还有 ...`\d+`个~/)) {
+            var yuchiMd = md.match(/`鱼翅`还有 ...`\d+`个~/);
+            var yuchiNum = yuchiMd[0].match(/\d+/)[0];
+            fish_tongji.bagChi = parseInt(yuchiNum);
+            console.log(yuchiNum);
+        }
+        if (md.match(/`鱼丸`还有 ...`\d+`个~/)) {
+            var yuwanMd = md.match(/`鱼丸`还有 ...`\d+`个~/);
+            var yuwanNum = yuwanMd[0].match(/\d+/)[0];
+            fish_tongji.bagWan = parseInt(yuwanNum);
+            console.log(yuwanNum);
+        }
+        // 鱼叉列表
+        if (md.indexOf('鱼叉列表') > -1) {
+            var yuchaMd = md.split("色鱼叉");
+            fish_tongji.bagCha = yuchaMd.length - 1;
+            console.log(yuchaMd.length);
+
+            var chaList = [];
+            yuchaMd.forEach(e => {
+                var color = e.substring(e.length - 1);
+                if (color == '橙') {
+                    chaList.push('🧡');
+                } else if (color == '紫'){
+                    chaList.push('💜');
+                } else if (color == '白'){
+                    chaList.push('🤍');
+                }
+            });
+            fish_tongji.yuchaList = chaList;
+        } else {
+            fish_tongji.bagCha = 0;
+        }
+        window.localStorage.setItem('fish-tongji', JSON.stringify(fish_tongji));
     }
 
     //统计
@@ -706,6 +759,7 @@
         kouling: 0,
         five2one: 0,
         byYuchi: 0,
+        yuchaList: [],
         dateStr: new Date().toLocaleString(),
         date: new Date().getDate()
     };
@@ -713,7 +767,12 @@
     async function tongji(markDown, content) {
         try {
             if (new Date().getDate() != fish_tongji.date) { // 隔日重置
-                console.log('重置')
+                // 保留背包数据
+                newOpt.bagChi = fish_tongji.bagChi;
+                newOpt.bagWan = fish_tongji.bagWan;
+                newOpt.bagCha = fish_tongji.bagCha;
+                newOpt.yuchaList = fish_tongji.yuchaList;
+                newOpt.byDateStr = fish_tongji.byDateStr;
                 fish_tongji = newOpt;
                 fish_tongji.dateStr = new Date().toLocaleString();
                 fish_tongji.date = new Date().getDate();
@@ -726,62 +785,88 @@
                         fish_tongji.yuchi = fish_tongji.yuchi + match
                         fish_tongji.total += match
                         fish_tongji.biuYuchi += match
+                        fish_tongji.bagChi += match
                     } else {
                         fish_tongji.yuwan = fish_tongji.yuwan + match
+                        fish_tongji.bagWan += match
                     }
                 }
             } else if (markDown.indexOf('亲爱的玩家. 你拿出渔网里的东西一看. 竟然是') > -1 || markDown.indexOf('亲爱的玩家. 你踩在沙滩上感觉有什么东西硌脚, 抬起脚一看. 竟然是') > -1) {
                 var name = markDown.substring(markDown.indexOf('`') + 1, markDown.lastIndexOf('`'));
-                console.log(name)
+                // console.log(name)
+                fish_tongji.bagCha += 1;
                 switch (name) {
                     case '橙色鱼叉':
                         fish_tongji.chengse += 1;
+                        fish_tongji.yuchaList.push('🧡');
                         break
                     case '紫色鱼叉':
                         fish_tongji.zise += 1;
+                        fish_tongji.yuchaList.push('💜');
                         break
                     case '白色鱼叉':
                         fish_tongji.baise += 1;
+                        fish_tongji.yuchaList.push('🤍');
                         break
                     default:
                         break
                 }
             } else if (markDown.indexOf('亲爱的玩家. 由于你的橙色品质强化已到顶峰, 触发橙色隐藏功能-CV. 又获得了一把鱼叉~') > -1) {
                 fish_tongji.chengse += 1
-                console.log('CV')
+                fish_tongji.bagCha += 1;
+                fish_tongji.yuchaList.push('💕');
+                // console.log('CV')
             } else if (markDown.indexOf('您失去了 ...5 个... 鱼翅. 已扣除...[来源: 聊天室游戏-捡鱼叉]') > -1) {
                 fish_tongji.cishu += 1
                 fish_tongji.total -= 5
+                fish_tongji.bagChi -= 5
             } else if (markDown.match(/您获得了 ...\d+ 个... 鱼翅. 已到账...\[来源: 欢乐时光兑换鱼翅/)) {
                 fish_tongji.huanle = fish_tongji.huanle + parseInt(markDown.match(/\d+/)[0])
+                fish_tongji.bagChi += parseInt(markDown.match(/\d+/)[0])
             } else if (markDown.indexOf('嘻嘻 恭喜你获得一个口令红包, 快去聊天室粘贴口令吧~') > -1) {
                 fish_tongji.kouling += 1
             } else if (markDown.indexOf('您获得了 ...1 个... 鱼翅. 已到账...[来源: 聊天室游戏-捡鱼叉收获]') > -1) {
                 fish_tongji.five2one += 1
                 fish_tongji.total += 1
-                console.log('五换一')
+                fish_tongji.bagChi += 1;
+                // console.log('五换一')
             } else if (content.match(/您获得了 ...\d+ 个... 鱼翅. 已到账...\[来源: 暴雨梨花针/)) {
                 var match = markDown.match(/\d+/);
                 match = parseInt(match[0]);
                 fish_tongji.total += match
                 fish_tongji.yuchi += match
                 fish_tongji.byYuchi += match
-                /* const parser = new DOMParser();
-                const doc = parser.parseFromString(content, 'text/html');
-                const table = doc.querySelector('table');
-                for (let i = 1; i < table.rows.length; i++) {
-                    var cells = table.rows[i].cells;
-                    fish_tongji.total += parseInt(cells[2].innerText)
-                    fish_tongji.yuchi += parseInt(cells[2].innerText)
-                    fish_tongji.byYuchi += parseInt(cells[2].innerText)
-                }*/
+                fish_tongji.bagCha = 0;
+                fish_tongji.yuchaList = [];
                 fish_tongji.byDateStr = new Date().toLocaleString()
+            } else if (content.match(/您失去了 ...\d+ 个... 鱼翅. 已扣除.../) && markDown.indexOf("鱼叉抢夺") > -1) { // 被标记
+                var match = markDown.match(/\d+/);
+                match = parseInt(match[0]);
+                fish_tongji.bagChi -= match;
+            } else if (content.match(/您获得了 ...\d+ 个... .{2}. 已到账...\[来源: 聊天室活动/)) { // 天降
+                var match = markDown.match(/\d+/);
+                match = parseInt(match[0]);
+                if (markDown.indexOf("鱼翅") > -1) {
+                    fish_tongji.bagChi += match
+                } else {
+                    fish_tongji.bagWan += match
+                }
+            } else if (content.match(/您获得了 ...\d+ 个... 鱼丸. 已到账...\[来源: 冰冰的很嫌弃掉在地上的鱼丸/)) { // 探索或者天降鱼丸
+                var match = markDown.match(/\d+/);
+                match = parseInt(match[0]);
+                fish_tongji.bagWan += match;
+            } else if (content.match(/您失去了 ...\d+ 个... 鱼翅. 已扣除...\[来源: 修/)) { //修炼心法或者修习功法
+                var match = markDown.match(/\d+/);
+                match = parseInt(match[0]);
+                fish_tongji.bagChi -= match;
             }
             window.localStorage.setItem('fish-tongji', JSON.stringify(fish_tongji))
         } catch (e) {
             console.log(e)
         }
     }
+    waitWss();
 
+    GM_addStyle('#robotBox #robotMsgList, #noteMsgList {scrollbar-width: none;}');
 
 })();
