@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         鱼派小尾巴
 // @namespace    http://tampermonkey.net/
-// @version      1.6.2
+// @version      1.6.3
 // @description  try to thank APTX-4869!
 // @author       (江户川-哀酱)APTX-4869
 // @match        https://fishpi.cn/cr
@@ -13,7 +13,7 @@
 
 (function () {
     'use strict';
-    const version_us = "v1.6.2";
+    const version_us = "v1.6.3";
     var heads = document.getElementsByTagName("head");
     var link = document.getElementsByTagName("link");
     var suffixFlag = window.localStorage['xwb_flag'] ? JSON.parse(window.localStorage['xwb_flag']) : false;
@@ -23,6 +23,8 @@
     var lspCDKEY = window.localStorage['lspCDKEY'];
     var focusStorage = window.localStorage['focus_users'] ? window.localStorage['focus_users'] : "";
     var focus_users = focusStorage.split(",");
+    // 渔场token
+    var yc_token = window.localStorage['yc_token'] ? window.localStorage['yc_token'] : '';
     // console.log(lspCDKEY);
     GM_registerMenuCommand("小尾巴开关", () => {
         suffixFlag = !suffixFlag;
@@ -247,7 +249,8 @@
     jl_jyc.setAttribute('style', 'margin-right:5px');
     //绑定按键点击功能
     jl_jyc.onclick = function () {
-        sendMsgApi("凌 捡鱼叉 " + getRandomInt(0,99));
+        // sendMsgApi("凌 捡鱼叉 " + getRandomInt(0,99));
+        sendJLMsg("捡鱼叉");
     };
 
     // biu
@@ -258,7 +261,8 @@
     jl_biu.setAttribute('style', 'margin-right:5px');
     //绑定按键点击功能
     jl_biu.onclick = function () {
-        sendMsgApi("凌 biu vmet " + getRandomInt(0,99));
+        // sendMsgApi("凌 biu vmet " + getRandomInt(0,99));
+        sendJLMsg("biu", "vmet");
     };
 
     // 精灵的周四/五/六事件
@@ -390,6 +394,27 @@
             data: JSON.stringify(redPacketData),
             success: function (e) {
 
+            }
+        });
+    }
+
+    function sendJLMsg(msg, user) {
+        if (yc_token.length == 0) {
+            renderNoteMsg('脚本未获取到您的渔场token，已自动发送获取渔场token的命令！请收到token私信后重试……');
+            sendMsgApi("凌 渔场初始化");
+            return;
+        }
+        // /fishery/inst/push
+        var url = "https://elves.x-meta.online/fishery/inst/push?token=" + yc_token + "&inst=" + msg;
+        if (user && user.length > 0) {
+            url = url + "&opts=" + user
+        }
+        // console.log('url', url);
+        $.ajax({
+            url: url,
+            type: "GET",
+            async: false,
+            success: function (e) {
             }
         });
     }
@@ -867,6 +892,9 @@
                 fish_tongji.bagChi += 5;
                 fish_tongji.yuchi += 5;
                 fish_tongji.total += 5;
+            } else if (markDown.indexOf('Token是') > -1 && markDown.indexOf('初始化') > -1) {
+                yc_token = content.substring(content.indexOf('Token是：') + 7, content.indexOf('</p>'));
+                window.localStorage.setItem('yc_token', yc_token);
             }
             window.localStorage.setItem('fish-tongji', JSON.stringify(fish_tongji))
         } catch (e) {
