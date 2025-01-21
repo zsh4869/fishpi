@@ -8,6 +8,7 @@
 // @icon         https://fishpi.cn/images/favicon.png
 // @grant        GM_registerMenuCommand
 // @grant        GM_addStyle
+// @connect      elves.x-meta.online
 // @grant        unsafeWindow
 // ==/UserScript==
 
