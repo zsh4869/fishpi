@@ -254,6 +254,18 @@
         sendJLMsg("捡鱼叉");
     };
 
+    // 摸渔网
+    var jl_myw = document.createElement("button");
+    jl_myw.id = "myw";
+    jl_myw.textContent = "摸渔网";
+    jl_myw.className = "red";
+    jl_myw.setAttribute('style', 'margin-right:5px');
+    //绑定按键点击功能
+    jl_myw.onclick = function () {
+        // sendMsgApi("凌 捡鱼叉 " + getRandomInt(0,99));
+        sendJLMsg("摸渔网");
+    };
+
     // biu
     var jl_biu = document.createElement("button");
     jl_biu.id = "yyc";
@@ -368,6 +380,7 @@
     elve.appendChild(ge_qa);
     elve.appendChild(jl_jyc);
     elve.appendChild(jl_biu);
+    elve.appendChild(jl_myw);
     elve.appendChild(ice_mh);
     elve.appendChild(ge_qt);
     elve.appendChild(jl_week);
